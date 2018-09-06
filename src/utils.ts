@@ -32,18 +32,28 @@ export function bindProviders (container: Container, providers: any[]) {
     let provideValue: any;
     let provideFactory: any;
     let factoryDeps: any[] = [];
+    let useExisting = false;
 
     if (isClassProvider(provider)) {
       if (typeof provider === 'function') {
         provideClass = provider;
       } else {
         provideClass = provider.useClass;
+        useExisting = provider.useExisting === true;
       }
     } else if (isValueProvider(provider)) {
       provideValue = provider.useValue;
+      useExisting = provider.useExisting === true;
     } else if (isFactoryProvider(provider)) {
       provideFactory = provider.useFactory;
       factoryDeps = provider.deps || [];
+      useExisting = provider.useExisting === true;
+    }
+
+    if (useExisting) {
+      if (container.isBound(provide)) {
+        continue;
+      }
     }
 
     if (provideClass) {

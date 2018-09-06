@@ -177,4 +177,78 @@ describe('basic test', () => {
     const wrapper = mount(<TestComp/>);
     expect(wrapper.children().children().props().foo).is.eq('foo');
   });
+
+  it('use existing', () => {
+    @injectable()
+    class ServiceA {
+      name = 'service a';
+    }
+
+    @injectable()
+    class NewServiceA {
+      name = 'new service a';
+    }
+
+    @injectable()
+    class ServiceB {
+      name = 'service b';
+    }
+
+    @injectable()
+    class NewServiceB {
+      name = 'new service b';
+    }
+
+    const {ProvideProps, InjectProps} = createPropsDecorators();
+
+    @ProvideProps([
+      {provide: ServiceA, useClass: NewServiceA},
+      {provide: ServiceB, useClass: NewServiceB},
+      {provide: 'VALUE_A', useValue: 'new a'},
+      {provide: 'VALUE_B', useValue: 'new b'},
+      {provide: 'VALUE_A_FROM_FACTORY', useFactory: () => 'new a from factory'},
+      {provide: 'VALUE_B_FROM_FACTORY', useFactory: () => 'new b from factory'},
+    ])
+    class RootProviderLayer extends React.Component {
+      render () {
+        return this.props.children || null
+      }
+    }
+
+    @ProvideProps([
+      {provide: ServiceA, useClass: ServiceA, useExisting: true},
+      {provide: 'VALUE_A', useValue: 'default a', useExisting: true},
+      {provide: 'VALUE_A_FROM_FACTORY', useFactory: () => 'default a from factory', useExisting: true},
+      {provide: ServiceB, useClass: ServiceB},
+      {provide: 'VALUE_B', useValue: 'default b'},
+      {provide: 'VALUE_B_FROM_FACTORY', useFactory: () => 'default b from factory'}
+    ])
+    @InjectProps({
+      serviceA: ServiceA,
+      valueA: 'VALUE_A',
+      valueAFromFactory: 'VALUE_A_FROM_FACTORY',
+      serviceB: ServiceB,
+      valueB: 'VALUE_B',
+      valueBFromFactory: 'VALUE_B_FROM_FACTORY',
+    })
+    class SubProviderLayer extends React.Component {
+      render () {
+        return this.props.children || null;
+      }
+    }
+
+    const wrapper = mount((
+      <RootProviderLayer>
+        <SubProviderLayer/>
+      </RootProviderLayer>
+    ));
+
+    const subProviderProps = wrapper.find(SubProviderLayer).children().children().props();
+    expect(subProviderProps.serviceA.name).is.eq('new service a');
+    expect(subProviderProps.valueA).is.eq('new a');
+    expect(subProviderProps.valueAFromFactory).is.eq('new a from factory');
+    expect(subProviderProps.serviceB.name).is.eq('service b');
+    expect(subProviderProps.valueB).is.eq('default b');
+    expect(subProviderProps.valueBFromFactory).is.eq('default b from factory');
+  });
 });

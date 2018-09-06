@@ -35,8 +35,8 @@ export function createPropsDecorators(rootContainer?: Container) {
             <ContainerContext.Consumer>
               {(container: Container) => {
                 const childContainer = new Container();
-                bindProviders(childContainer, providers);
                 childContainer.parent = container;
+                bindProviders(childContainer, providers);
 
                 return (
                   <ContainerContext.Provider value={childContainer}>
