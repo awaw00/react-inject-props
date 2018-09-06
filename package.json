@@ -9,7 +9,8 @@
     "ts:lib": "tsc --module commonjs --outDir lib",
     "ts:es": "tsc --module esnext --outDir es",
     "build": "npm run clean && npm run ts:lib",
-    "test": "cross-env NODE_ENV=test mocha --opts mocha.opts --watch"
+    "test": "cross-env NODE_ENV=test mocha --opts mocha.opts",
+    "test:watch": "cross-env NODE_ENV=test mocha --opts mocha.opts --watch"
   },
   "peerDependencies": {
     "inversify": "^4.13.0",
