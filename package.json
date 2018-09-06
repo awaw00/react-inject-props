@@ -4,6 +4,10 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "license": "MIT",
+  "author": {
+    "name": "awaw00",
+    "email": "awaw0618@outlook.com"
+  },
   "scripts": {
     "clean": "rimraf lib && rimraf es",
     "ts:lib": "tsc --module commonjs --outDir lib",
