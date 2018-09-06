@@ -1,0 +1,8 @@
+--require mocha-clean
+--require ts-node/register
+--require jsdom-global/register
+--require ./testSetup/index.ts
+--reporter spec
+--watch-extensions tsx,ts
+src/**/*.spec.tsx
+src/**/*.spec.ts
