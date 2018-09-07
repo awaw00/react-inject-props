@@ -34,15 +34,17 @@ export function createPropsDecorators(rootContainer?: Container) {
           return (
             <ContainerContext.Consumer>
               {(container: Container) => {
-                const childContainer = new Container();
-                childContainer.parent = container;
-                bindProviders(childContainer, providers);
+                const childContainer = bindProviders(container, providers);
 
-                return (
-                  <ContainerContext.Provider value={childContainer}>
-                    <Comp {...this.props} />
-                  </ContainerContext.Provider>
-                );
+                if (childContainer) {
+                  return (
+                    <ContainerContext.Provider value={childContainer}>
+                      <Comp {...this.props} />
+                    </ContainerContext.Provider>
+                  );
+                } else {
+                  return <Comp {...this.props} />;
+                }
               }}
             </ContainerContext.Consumer>
           );

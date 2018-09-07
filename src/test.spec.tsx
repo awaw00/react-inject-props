@@ -4,6 +4,7 @@ import { mount, shallow } from 'enzyme';
 import { injectable, Container } from 'inversify';
 import { expect } from 'chai';
 import { createPropsDecorators } from './createPropsDecorators';
+import { bindProviders } from './utils';
 
 describe('basic test', () => {
   it('simple inject props', () => {
@@ -250,5 +251,19 @@ describe('basic test', () => {
     expect(subProviderProps.serviceB.name).is.eq('service b');
     expect(subProviderProps.valueB).is.eq('default b');
     expect(subProviderProps.valueBFromFactory).is.eq('default b from factory');
+  });
+
+  it('should NOT provide new container if no providers need bind', () => {
+    const container = new Container();
+
+    @injectable()
+    class Service {
+    }
+
+    container.bind(Service).toSelf();
+
+    expect(bindProviders(container, [{provide: Service, useClass: Service, useExisting: true}])).is.eq(null);
+    expect(bindProviders(container, [{provide: Service, useClass: Service}])).is.not.eq(null);
+    expect(bindProviders(container, [])).is.eq(null);
   });
 });

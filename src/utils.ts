@@ -25,7 +25,10 @@ export function resolveProps (container: Container, propsNeedInject: any) {
   return injectedProps;
 }
 
-export function bindProviders (container: Container, providers: any[]) {
+export function bindProviders (parentContainer: Container, providers: any[]) {
+  const container = new Container();
+
+  let needBind;
   for (let provider of providers) {
     const provide: interfaces.ServiceIdentifier<any> = typeof provider === 'function' ? provider : provider.provide;
     let provideClass: any;
@@ -51,14 +54,22 @@ export function bindProviders (container: Container, providers: any[]) {
     }
 
     if (useExisting) {
-      if (container.isBound(provide)) {
+      if (parentContainer.isBound(provide)) {
+        continue;
+      }
+    }
+
+    needBind = true;
+
+    if (useExisting) {
+      if (container.isBound((provide))) {
         continue;
       }
     }
 
     if (provideClass) {
       container.bind(provide).to(provideClass).inSingletonScope();
-    } else if (provideValue) {
+    } else if (provideValue !== void 0) {
       container.bind(provide).toConstantValue(provideValue);
     } else if (provideFactory) {
       if (factoryDeps.length > 0) {
@@ -73,4 +84,11 @@ export function bindProviders (container: Container, providers: any[]) {
       container.bind(provide).toDynamicValue(provideFactory);
     }
   }
+
+  if (needBind) {
+    container.parent = parentContainer;
+    return container;
+  }
+
+  return null;
 }
