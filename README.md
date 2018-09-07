@@ -21,7 +21,7 @@ with typescript, you should install the "reflect-metadata" package as well:
 
 ## ▶ Usage
 
-### Get decorators
+### Decorators creation
 you can create decorators `InjectProps` and `ProvideProps` use `createPropsDecorators` function with a inversify container instance as the root container:
 
 ```typescript
@@ -42,7 +42,7 @@ const {InjectProps, ProvideProps, rootContainer} = createPropsDecorators();
 
 `react-inject-props` also exported `InjectProps`, `ProvideProps` and `rootContainer` returned by `createPropsDecorators()`.
 
-### Inject class
+### Class injection
 
 ```typescript
 import { injectable } from 'inversify';
@@ -92,7 +92,7 @@ render((
 
 in `Page` component, we can access `Service` instance by `this.props.service`, because we bind `Service` to container at `App` component with `ProvideProps` decorator and "Inject" it as `this.props.service` by `InjectProps`.
 
-### Inject value
+### Value Injection
 
 ```typescript
 interface AppConfig {
@@ -124,7 +124,7 @@ export class Page extends React.Component<PageProps> {
 }
 ```
 
-### Inject factory (dynamic value)
+### Factory Injection(dynamic value)
 
 ```typescript
 @injectable()
