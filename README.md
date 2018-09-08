@@ -21,6 +21,16 @@ with typescript, you should install the "reflect-metadata" package as well:
 
 ## ▶ Usage
 
+- [get decorators](#decorators-creation)
+- inject
+  - [class](#class-injection)
+  - [value](#value-injection)
+  - [factory](#factory-injectiondynamic-value)
+- [hierarchical injection](#hierarchical-injection)
+- [useExisting](#use-existing-provider-if-already-bounded)
+- [get container from props](#get-container-instance)
+- [use ContainerContext directly](#use-containercontext-directly)
+
 ### Decorators creation
 you can create decorators `InjectProps` and `ProvideProps` use `createPropsDecorators` function with a inversify container instance as the root container:
 
