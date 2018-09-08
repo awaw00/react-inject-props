@@ -4,5 +4,4 @@
 --require ./testSetup/index.ts
 --reporter spec
 --watch-extensions tsx,ts
-src/**/*.spec.tsx
-src/**/*.spec.ts
+src/**/*.spec.*
