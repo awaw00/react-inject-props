@@ -16,7 +16,7 @@ export function createPropsDecorators(rootContainer?: Container) {
           return (
             <ContainerContext.Consumer>
               {(c: Container) => {
-                return <Comp {...this.props} {...resolveProps(c, propsNeedInject)} />;
+                return <Comp container={c} {...this.props} {...resolveProps(c, propsNeedInject)} />;
               }}
             </ContainerContext.Consumer>
           );
@@ -39,11 +39,11 @@ export function createPropsDecorators(rootContainer?: Container) {
                 if (childContainer) {
                   return (
                     <ContainerContext.Provider value={childContainer}>
-                      <Comp {...this.props} />
+                      <Comp container={childContainer} {...this.props} />
                     </ContainerContext.Provider>
                   );
                 } else {
-                  return <Comp {...this.props} />;
+                  return <Comp container={container} {...this.props} />;
                 }
               }}
             </ContainerContext.Consumer>
@@ -59,5 +59,6 @@ export function createPropsDecorators(rootContainer?: Container) {
     InjectProps,
     ProvideProps,
     rootContainer,
+    ContainerContext,
   };
 }

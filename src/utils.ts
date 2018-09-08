@@ -26,7 +26,7 @@ export function resolveProps (container: Container, propsNeedInject: any) {
 }
 
 export function bindProviders (parentContainer: Container, providers: any[]) {
-  const container = new Container();
+  const container = parentContainer.createChild(parentContainer.options);
 
   let needBind;
   for (let provider of providers) {
@@ -86,7 +86,6 @@ export function bindProviders (parentContainer: Container, providers: any[]) {
   }
 
   if (needBind) {
-    container.parent = parentContainer;
     return container;
   }
 

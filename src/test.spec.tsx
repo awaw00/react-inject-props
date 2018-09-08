@@ -266,4 +266,30 @@ describe('basic test', () => {
     expect(bindProviders(container, [{provide: Service, useClass: Service}])).is.not.eq(null);
     expect(bindProviders(container, [])).is.eq(null);
   });
+
+  it('children should have same container options with parent container', () => {
+    const options = {skipBaseClassChecks: true, autoBindInjectable: false};
+    const rootContainer = new Container(options);
+    const {ProvideProps, InjectProps} = createPropsDecorators(rootContainer);
+
+    @injectable()
+    class Service {
+
+    }
+
+    @ProvideProps([
+      Service
+    ])
+    class App extends React.Component {
+      render () {
+        return null;
+      }
+    }
+
+    const wrapper = mount(<App/>);
+
+    const props = wrapper.children().props();
+    expect(props.container.parent).is.eq(rootContainer);
+    expect(props.container.options).is.deep.eq(rootContainer.options);
+  });
 });
