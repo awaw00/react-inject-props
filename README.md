@@ -222,3 +222,56 @@ render ((
 ```
 
 if `Service` can be resolved in App's providers or `rootContainer`, the `Service` provider will be ignored.
+
+### Get container instance
+
+```typescript
+import { Container } from 'inversify';
+
+interface CompProps {
+  container: Container;
+}
+
+@ProvideProps([
+  Service
+])
+class Comp extends React.Component<CompProps> {
+  componentDidMount () {
+    const {container} = this.props;
+    ...
+  }
+}
+```
+
+container of current component's hierarchy will also inject in component.props when use `ProvideProps` or `InjectProps` decorator.
+
+### Use ContainerContext directly
+
+```typescript
+import { ContainerContext } from 'react-inject-props';
+
+// or
+
+import { createPropsDecorators } from 'react-inject-props';
+const {ContainerContext} = createPropsDecorators();
+
+// then use it in your component
+
+class Comp extends React.Component {
+  render () {
+    return (
+      <ContainerContext.Provider value={xxx}>
+        ...
+          ...
+            <ContainerContext.Consumer>
+              {(container: Container) => {
+                ...
+              }}
+            </ContainerContext.Consumer>
+          ...
+        ...
+      </ContainerContext.Provider>
+    );
+  }
+}
+```
