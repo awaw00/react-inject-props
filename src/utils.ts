@@ -13,6 +13,17 @@ export function isFactoryProvider (provider: Provider): provider is FactoryProvi
   return 'useFactory' in provider;
 }
 
+export function filterPropsNeedInject (propsFromParent: any, propsNeedInject: any) {
+  const _propsNeedInject = {...propsNeedInject};
+  for (const key in propsFromParent) {
+    if (key in propsNeedInject) {
+      delete _propsNeedInject[key];
+    }
+  }
+
+  return _propsNeedInject;
+}
+
 export function resolveProps (container: Container, propsNeedInject: any) {
   const injectedProps: any = {};
   for (const propsKey in propsNeedInject) {

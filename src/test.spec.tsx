@@ -5,9 +5,10 @@ import { injectable, Container } from 'inversify';
 import { expect } from 'chai';
 import { createPropsDecorators } from './createPropsDecorators';
 import { bindProviders } from './utils';
+import sinon from 'sinon';
 
-describe('basic test', () => {
-  it('simple inject props', () => {
+describe('Test', () => {
+  it('Simple inject props', () => {
     const rootContainer = new Container();
 
     @injectable()
@@ -32,7 +33,7 @@ describe('basic test', () => {
     expect(wrapper.children().props().service).to.be.eq(rootContainer.get(Service));
   });
 
-  it('inject props to stateless function component', () => {
+  it('Inject props to stateless function component', () => {
     const rootContainer = new Container();
 
     @injectable()
@@ -50,12 +51,7 @@ describe('basic test', () => {
     expect(wrapper.children().props().service).to.be.eq(rootContainer.get(Service));
   });
 
-  it('auto generate root container', () => {
-    const {rootContainer} = createPropsDecorators();
-    expect(rootContainer).not.eq(undefined);
-  });
-
-  it('hierarchical inject props', () => {
+  it('Hierarchical inject props', () => {
     const {ProvideProps, InjectProps} = createPropsDecorators();
 
     @injectable()
@@ -148,7 +144,7 @@ describe('basic test', () => {
     expect(props2.config).is.eq(props0.config);
   });
 
-  it('factory provider', () => {
+  it('Factory provider', () => {
     const {ProvideProps, InjectProps} = createPropsDecorators();
 
     @injectable()
@@ -179,7 +175,7 @@ describe('basic test', () => {
     expect(wrapper.children().children().props().foo).is.eq('foo');
   });
 
-  it('use existing', () => {
+  it('Use existing', () => {
     @injectable()
     class ServiceA {
       name = 'service a';
@@ -253,7 +249,7 @@ describe('basic test', () => {
     expect(subProviderProps.valueBFromFactory).is.eq('default b from factory');
   });
 
-  it('should NOT provide new container if no providers need bind', () => {
+  it('Should NOT provide new container if no providers need bind', () => {
     const container = new Container();
 
     @injectable()
@@ -267,7 +263,7 @@ describe('basic test', () => {
     expect(bindProviders(container, [])).is.eq(null);
   });
 
-  it('children should have same container options with parent container', () => {
+  it('Should children have same container options with parent container', () => {
     const options = {skipBaseClassChecks: true, autoBindInjectable: false};
     const rootContainer = new Container(options);
     const {ProvideProps, InjectProps} = createPropsDecorators(rootContainer);
@@ -289,7 +285,92 @@ describe('basic test', () => {
     const wrapper = mount(<App/>);
 
     const props = wrapper.children().props();
-    expect(props.container.parent).is.eq(rootContainer);
-    expect(props.container.options).is.deep.eq(rootContainer.options);
+    expect(props.containerNode.container.parent).is.eq(rootContainer);
+    expect(props.containerNode.container.options).is.deep.eq(rootContainer.options);
+  });
+
+  it('Should NOT inject prop which is already passed', () => {
+    const rootContainer = new Container();
+    const {InjectProps, ProvideProps} = createPropsDecorators(rootContainer);
+
+    @injectable()
+    class Service {
+
+    }
+
+    interface CompProps {
+      service: Service;
+    }
+
+    @InjectProps({
+      service: Service
+    })
+    class Comp extends React.Component<CompProps> {
+      render () {
+        return null;
+      }
+    }
+
+    rootContainer.bind(Service).toSelf();
+
+    const serviceFromParent = new Service();
+    const serviceFromContainer = rootContainer.get(Service);
+    const wrapper = mount(<Comp service={serviceFromParent}/>)
+
+    expect(wrapper.children().props().service).is.not.eq(serviceFromContainer);
+    expect(wrapper.children().props().service).is.eq(serviceFromParent);
+  });
+
+  it('Should NOT recreate container while component rerender', () => {
+    const {ProvideProps, containerManager} = createPropsDecorators();
+
+    const rootNode = containerManager.rootNode;
+
+    @injectable()
+    class Service {}
+
+    @ProvideProps([
+      Service
+    ])
+    class Comp extends React.Component {
+      public render () {
+        return null;
+      }
+    }
+
+    const wrapper = mount(<Comp/>);
+
+    expect(rootNode.childNodes.length).is.eq(1);
+    wrapper.update();
+    expect(rootNode.childNodes.length).is.eq(1);
+  });
+
+  it('Should NOT resolve props again while component rerender', () => {
+    const rootContainer = new Container();
+    const {InjectProps, containerManager} = createPropsDecorators(rootContainer);
+
+    const rootNode = containerManager.rootNode;
+
+    @injectable()
+    class Service {}
+
+    @InjectProps({
+      service: Service
+    })
+    class Comp extends React.Component {
+      public render () {
+        return null;
+      }
+    }
+    rootContainer.bind(Service).toSelf().inSingletonScope();
+
+    const spy = sinon.spy(rootNode, 'resolveProps');
+
+    const wrapper = mount(<Comp/>);
+
+    wrapper.update();
+    expect(spy.callCount).is.eq(1);
+
+    spy.restore();
   });
 });

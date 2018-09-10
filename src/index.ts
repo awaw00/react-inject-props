@@ -1,11 +1,11 @@
 import { createPropsDecorators } from './createPropsDecorators';
 
-const {InjectProps, ProvideProps, rootContainer, ContainerContext} = createPropsDecorators();
+const {InjectProps, ProvideProps, containerManager, ContainerContext} = createPropsDecorators();
 
 export {
   InjectProps,
   ProvideProps,
-  rootContainer,
+  containerManager,
   ContainerContext,
   createPropsDecorators
 };
