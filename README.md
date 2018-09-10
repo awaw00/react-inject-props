@@ -9,11 +9,11 @@ Inject props to your react component.
 
 ## 💾 Installation
 
-`npm i inversify react-inject-props --save`
+`npm i react inversify react-inject-props --save`
 
 or
 
-`yarn add inversify react-inject-props`
+`yarn add react inversify react-inject-props`
 
 with typescript, you should install the "reflect-metadata" package as well:
 
