@@ -6,7 +6,6 @@ import { expect } from 'chai';
 import { createPropsDecorators } from './createPropsDecorators';
 import { bindProviders } from './utils';
 import sinon from 'sinon';
-import { getBaseClassDependencyCount } from "inversify/dts/planning/reflection_utils";
 
 describe('Test', () => {
   it('Simple inject props', () => {
