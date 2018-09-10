@@ -1,5 +1,6 @@
 {
   "name": "react-inject-props",
+  "description": "Inject props to your react component.",
   "version": "1.0.12",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -40,6 +41,7 @@
     "object-assign": "^4.1.1",
     "promise": "^8.0.1",
     "raf": "^3.4.0",
+    "react": "^16.4.2",
     "react-addons-test-utils": "^15.6.2",
     "react-dom": "^16.4.2",
     "reflect-metadata": "^0.1.12",
