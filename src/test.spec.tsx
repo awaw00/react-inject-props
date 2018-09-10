@@ -6,6 +6,7 @@ import { expect } from 'chai';
 import { createPropsDecorators } from './createPropsDecorators';
 import { bindProviders } from './utils';
 import sinon from 'sinon';
+import { getBaseClassDependencyCount } from "inversify/dts/planning/reflection_utils";
 
 describe('Test', () => {
   it('Simple inject props', () => {
@@ -372,5 +373,27 @@ describe('Test', () => {
     expect(spy.callCount).is.eq(1);
 
     spy.restore();
+  });
+
+  it('Should auto destroy container node after component unmounted', () => {
+    const {InjectProps, ProvideProps, containerManager} = createPropsDecorators();
+    const rootNode = containerManager.rootNode;
+
+    @injectable()
+    class Service {}
+
+    @ProvideProps([
+      Service
+    ])
+    class Comp extends React.Component {
+      render () {
+        return <div></div>;
+      }
+    }
+
+    const wrapper = mount(<Comp/>);
+    expect(rootNode.childNodes.length).is.eq(1);
+    wrapper.unmount();
+    expect(rootNode.childNodes.length).is.eq(0);
   });
 });

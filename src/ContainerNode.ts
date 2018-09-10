@@ -31,6 +31,7 @@ export class ContainerNode {
 
     const childNode = new ContainerNode(childContainer, providers);
     this.appendChild(childNode);
+    childNode.parentNode = this;
 
     return childNode;
   }

@@ -41,6 +41,11 @@ export function createPropsDecorators(rootContainer?: Container) {
     let childNodeCache: ContainerNode | false;
     return function(Comp: any) {
       class PropsProvider extends React.PureComponent<P> {
+        componentWillUnmount () {
+          if (childNodeCache) {
+            childNodeCache.destroy();
+          }
+        }
         public render() {
           return (
             <ContainerContext.Consumer>
