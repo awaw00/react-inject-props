@@ -51,6 +51,62 @@ describe('Test', () => {
     expect(wrapper.children().props().service).to.be.eq(rootContainer.get(Service));
   });
 
+  it('Singleton option of class provider', () => {
+    const {InjectProps, ProvideProps} = createPropsDecorators();
+
+    @injectable()
+    class GlobalService {
+    }
+
+    @injectable()
+    class Service {
+    }
+
+    @ProvideProps([
+      {provide: GlobalService, useClass: GlobalService},
+      {provide: Service, useClass: Service, singleton: false}
+    ])
+    class App extends React.Component {
+      render () {
+        return (
+          <div>{this.props.children}</div>
+        );
+      }
+    }
+
+    @InjectProps({
+      globalService: GlobalService,
+      service: Service
+    })
+    class Comp1 extends React.Component {
+      render () {
+        return null;
+      }
+    }
+
+    @InjectProps({
+      globalService: GlobalService,
+      service: Service
+    })
+    class Comp2 extends React.Component {
+      render () {
+        return null;
+      }
+    }
+
+    const wrapper = mount((
+      <App>
+        <Comp1/>
+        <Comp2/>
+      </App>
+    ));
+
+    const props1 = wrapper.find(Comp1).children().props();
+    const props2 = wrapper.find(Comp2).children().props();
+    expect(props1.globalService).is.eq(props2.globalService);
+    expect(props1.service).is.not.eq(props2.service);
+  });
+
   it('Hierarchical inject props', () => {
     const {ProvideProps, InjectProps} = createPropsDecorators();
 

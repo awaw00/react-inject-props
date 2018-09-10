@@ -43,6 +43,7 @@ export function bindProviders (parentContainer: Container, providers: any[]) {
   for (let provider of providers) {
     const provide: interfaces.ServiceIdentifier<any> = typeof provider === 'function' ? provider : provider.provide;
     let provideClass: any;
+    let singletonClass: boolean = true;
     let provideValue: any;
     let provideFactory: any;
     let factoryDeps: any[] = [];
@@ -54,6 +55,9 @@ export function bindProviders (parentContainer: Container, providers: any[]) {
       } else {
         provideClass = provider.useClass;
         useExisting = provider.useExisting === true;
+        if (provider.singleton !== void 0) {
+          singletonClass = provider.singleton;
+        }
       }
     } else if (isValueProvider(provider)) {
       provideValue = provider.useValue;
@@ -79,7 +83,10 @@ export function bindProviders (parentContainer: Container, providers: any[]) {
     }
 
     if (provideClass) {
-      container.bind(provide).to(provideClass).inSingletonScope();
+      const bindTo = container.bind(provide).to(provideClass);
+      if (singletonClass) {
+        bindTo.inSingletonScope();
+      }
     } else if (provideValue !== void 0) {
       container.bind(provide).toConstantValue(provideValue);
     } else if (provideFactory) {

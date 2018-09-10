@@ -4,6 +4,7 @@ export interface StandardClassProvider<T> {
   provide: interfaces.ServiceIdentifier<T>;
   useClass: interfaces.Newable<T>;
   useExisting?: boolean;
+  singleton?: boolean;
 }
 
 export type ClassProvider<T = any> = Function | StandardClassProvider<T> | interfaces.Newable<T>;
