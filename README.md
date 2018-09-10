@@ -47,10 +47,11 @@ if rootContainer not specified, `createPropsDecorators` will create it internall
 ```typescript
 import { createPropsDecorators } from 'react-inject-props';
 
-const {InjectProps, ProvideProps, rootContainer} = createPropsDecorators();
+const {InjectProps, ProvideProps, containerManager} = createPropsDecorators();
+const rootContainer = containerManager.rootNode.container;
 ```
 
-`react-inject-props` also exported `InjectProps`, `ProvideProps` and `rootContainer` returned by `createPropsDecorators()`.
+`react-inject-props` also exported `InjectProps`, `ProvideProps` and `containerManager` returned by `createPropsDecorators()`.
 
 ### Class injection
 
