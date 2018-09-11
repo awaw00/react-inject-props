@@ -23,10 +23,3 @@ export interface FactoryProvider<T = any> {
 }
 
 export type Provider<T = any> = ClassProvider<T> | ValueProvider<T> | FactoryProvider<T>;
-
-export interface ContainerNode {
-  container: Container;
-  providers: Provider[];
-  parentNode?: ContainerNode;
-  childNodes: ContainerNode[];
-}
