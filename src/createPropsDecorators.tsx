@@ -26,7 +26,7 @@ export function createPropsDecorators(rootContainer?: Container) {
               {(c: ContainerNode) => {
                 const injectProps = propsCache || c.resolveProps(_propsNeedInject);
                 propsCache = injectProps;
-                return <Comp container={c} {...injectProps} {...this.props} />;
+                return <Comp containerNode={c} {...injectProps} {...this.props} />;
               }}
             </ContainerContext.Consumer>
           );
