@@ -49,6 +49,13 @@ export class ContainerNode {
     this.childNodes.splice(childIndex, 1);
   }
 
+  public getRootNode (): ContainerNode {
+    if (this.parentNode) {
+      return this.parentNode.getRootNode();
+    }
+    return this;
+  }
+
   public destroy () {
     if (this.parentNode) {
       this.parentNode.removeChild(this);
