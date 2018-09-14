@@ -86,6 +86,8 @@ export function bindProviders (parentContainer: Container, providers: any[]) {
       const bindTo = container.bind(provide).to(provideClass);
       if (singletonClass) {
         bindTo.inSingletonScope();
+      } else {
+        bindTo.inTransientScope();
       }
     } else if (provideValue !== void 0) {
       container.bind(provide).toConstantValue(provideValue);
