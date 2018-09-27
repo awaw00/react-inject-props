@@ -16,7 +16,7 @@ export function isFactoryProvider (provider: Provider): provider is FactoryProvi
 export function filterPropsNeedInject (propsFromParent: any, propsNeedInject: any) {
   const _propsNeedInject = {...propsNeedInject};
   for (const key in propsFromParent) {
-    if (key in propsNeedInject) {
+    if (key in propsNeedInject && typeof propsNeedInject[key] !== 'undefined') {
       delete _propsNeedInject[key];
     }
   }
